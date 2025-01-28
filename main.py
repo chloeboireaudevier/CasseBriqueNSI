@@ -24,6 +24,8 @@ class Jeu:
         self.start=None
         self.partie=True
         self.ecran_debut=True
+        self.ecran_nom = False
+        self.nomjoueur = None
 
     def stage_suivant(self):
         self.stage+=1
@@ -79,6 +81,7 @@ class Jeu:
             screen.blit(font.render('( Vous allez être époustoufflés )',True,NOIR),[XMAX//3+10,YMAX//2-30])
             screen.blit(font.render('Pour commencer, appuyez sur espace',True,NOIR),[XMAX//3-10,YMAX//2])
             screen.blit(font.render('Meilleur score détenu par ' +Meilleur_score['Nom']+' avec '+str(Meilleur_score['Score'])+' points en '+str(round(Meilleur_score['Temps'],3))+' secondes',True,BLANC),[XMIN+10,YMIN+10])
+
         elif self.partie==False:
             if self.vies==0:
                 screen.fill(DEFAITE) #écran de défaite
@@ -92,11 +95,11 @@ class Jeu:
                 screen.blit(font.render('Rejouer ? o : oui, n : non',True,NOIR),[XMAX//2-100,YMAX//2+20])
             timer=time.time()-self.start
             if Meilleur_score['Score']<self.score :
-                Meilleur_score['Nom']=Nom
+                Meilleur_score['Nom']=self.nomjoueur
                 Meilleur_score['Score']=self.score
                 Meilleur_score['Temps']=timer
             elif Meilleur_score['Score']==self.score and Meilleur_score['Temps']>=timer:
-                Meilleur_score['Nom']=Nom
+                Meilleur_score['Nom']=self.nomjoueur
                 Meilleur_score['Score']=self.score
                 Meilleur_score['Temps']=timer
         elif self.fin_stage==True:
@@ -114,6 +117,95 @@ class Jeu:
             screen.blit(font.render('Stage '+str(self.stage),True,STAGE),[XMAX//2-20,YMIN+2])
 
 
+    def afficher_page_nom(self):
+            screen.fill(DEBUT)
+            screen.blit(font2.render('NOM',True,NOIR),[XMAX//4+30,YMAX//2-60])
+            
+            # basic font for user typed 
+            base_font = pygame.font.Font(None, 32) 
+            user_text = '' 
+            
+            # create rectangle 
+            input_rect = pygame.Rect(200, 200, 140, 32) 
+            
+            # color_active stores color(lightskyblue3) which 
+            # gets active when input box is clicked by user 
+            color_active = pygame.Color('lightskyblue3') 
+            
+            # color_passive store color(chartreuse4) which is 
+            # color of input box. 
+            color_passive = pygame.Color('chartreuse4') 
+            color = color_passive 
+            
+            active = False
+
+            
+            while True: 
+                for event in pygame.event.get(): 
+            
+                # if user types QUIT then the screen will close 
+                    if event.type == pygame.QUIT: 
+                        pygame.quit() 
+                        sys.exit() 
+            
+                    if event.type == pygame.MOUSEBUTTONDOWN: 
+                        if input_rect.collidepoint(event.pos): 
+                            active = True
+                        else: 
+                            active = False
+            
+                    if event.type == pygame.KEYDOWN: 
+
+                        if event.key == pygame.K_RETURN:
+                            return user_text
+            
+                        # Check for backspace 
+                        if event.key == pygame.K_BACKSPACE: 
+            
+                            # get text input from 0 to -1 i.e. end. 
+                            user_text = user_text[:-1] 
+            
+                        # Unicode standard is used for string 
+                        # formation 
+                        else: 
+                            user_text += event.unicode
+
+                
+                # it will set background color of screen 
+                screen.fill((255, 255, 255)) 
+            
+                if active: 
+                    color = color_active 
+                else: 
+                    color = color_passive 
+                    
+                # draw rectangle and argument passed which should 
+                # be on screen 
+                pygame.draw.rect(screen, color, input_rect) 
+            
+                text_surface = base_font.render(user_text, True, (255, 255, 255)) 
+                
+                # render at position stated in arguments 
+                screen.blit(text_surface, (input_rect.x+5, input_rect.y+5)) 
+                
+                # set width of textfield so that text cannot get 
+                # outside of user's text input 
+                input_rect.w = max(100, text_surface.get_width()+10) 
+                
+                # display.flip() will update only a portion of the 
+                # screen to updated, not full area 
+                pygame.display.flip() 
+                
+                # clock.tick(60) means that for every second at most 
+                # 60 frames should be passed. 
+                clock.tick(60) 
+
+
+
+
+    def get_nom(self):
+        self.nomjoueur = self.afficher_page_nom()
+
     def gestion_evenements(self):
         # Gestion des evenements
         for event in pygame.event.get():
@@ -125,6 +217,8 @@ class Jeu:
                 if event.type==pygame.KEYDOWN:
                     if event.key==pygame.K_SPACE:
                         self.ecran_debut=False
+                        self.ecran_nom = True
+                        self.get_nom()
                         self.start=time.time()
             elif event.type == pygame.MOUSEBUTTONDOWN: # On vient de cliquer sur la souris
                 if event.button == 1: # Bouton gauche
@@ -139,7 +233,6 @@ class Jeu:
                         pygame.quit()
                         sys.exit()
                         exit()
-
 
 
     def recup_briques(self,fichier):
@@ -204,7 +297,7 @@ Meilleur_score={}
 Meilleur_score['Nom']=contenu[0]
 Meilleur_score['Score']=int(contenu[1])
 Meilleur_score['Temps']=float(contenu[2])
-Nom=str(input('Entrez votre nom, joueur !'))
+#Nom=str(input('Entrez votre nom, joueur !'))
 jeu = Jeu()
 jeu.recup_briques('briques.txt')
 musics=['mario-kart-wii.mp3','super-mario-64.mp3']
