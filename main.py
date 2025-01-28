@@ -25,7 +25,6 @@ class Jeu:
         self.partie=True
         self.ecran_debut=True
         self.ecran_nom = False
-        self.nomjoueur = None
 
     def stage_suivant(self):
         self.stage+=1
