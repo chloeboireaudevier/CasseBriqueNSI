@@ -42,7 +42,6 @@ class Jeu:
 
 
     def rejouer(self):
-        Nom=str(input('Entrez votre nom, joueur !'))
         self.ecran_debut=True
         self.balle=Balle()
         self.raquette = Raquette()
@@ -57,20 +56,21 @@ class Jeu:
     def mise_a_jour(self):
         if self.vies==0:
             self.partie=False
-        x, y = pygame.mouse.get_pos()
-        self.balle.deplacer(self.raquette)
-        self.score=0
-        self.fin_stage=True
-        for brique in self.all_briques:
-            if brique.en_vie():
-                brique.collision_balle(self.balle,self.raquette)
-                if brique.type!='Indestructible':
-                    self.fin_stage=False
-            else:
-                self.score+=100
-        if self.balle.y + RAYON_BALLE > YMAX:
-            self.vies-=1
-        self.raquette.deplacer(x)
+        else:
+            x, y = pygame.mouse.get_pos()
+            self.balle.deplacer(self.raquette)
+            self.score=0
+            self.fin_stage=True
+            for brique in self.all_briques:
+                if brique.en_vie():
+                    brique.collision_balle(self.balle,self.raquette)
+                    if brique.type!='Indestructible':
+                        self.fin_stage=False
+                else:
+                    self.score+=100
+            if self.balle.y + RAYON_BALLE > YMAX:
+                self.vies-=1
+            self.raquette.deplacer(x)
 
     def affichage(self):
         screen.fill(FOND) # on efface l'écran
@@ -93,11 +93,7 @@ class Jeu:
                 screen.blit(font.render('Votre score : '+str(self.score),True,NOIR),[XMAX//2-60,YMAX//2])
                 screen.blit(font.render('Rejouer ? o : oui, n : non',True,NOIR),[XMAX//2-100,YMAX//2+20])
             timer=time.time()-self.start
-            if Meilleur_score['Score']<self.score :
-                Meilleur_score['Nom']=self.nomjoueur
-                Meilleur_score['Score']=self.score
-                Meilleur_score['Temps']=timer
-            elif Meilleur_score['Score']==self.score and Meilleur_score['Temps']>=timer:
+            if Meilleur_score['Score']<self.score or (Meilleur_score['Score']==self.score and Meilleur_score['Temps']>=timer) :
                 Meilleur_score['Nom']=self.nomjoueur
                 Meilleur_score['Score']=self.score
                 Meilleur_score['Temps']=timer
@@ -143,7 +139,7 @@ class Jeu:
                 for event in pygame.event.get(): 
             
                 # if user types QUIT then the screen will close 
-                    if event.type == pygame.QUIT: 
+                    if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE): 
                         pygame.quit() 
                         sys.exit() 
             
@@ -208,7 +204,7 @@ class Jeu:
     def gestion_evenements(self):
         # Gestion des evenements
         for event in pygame.event.get():
-            if event.type == pygame.QUIT: #pour quitter, refait car ça crashait à chaque fois
+            if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE): #pour quitter, refait car ça crashait à chaque fois
                 pygame.quit()
                 sys.exit()
                 exit()
