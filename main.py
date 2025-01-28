@@ -8,7 +8,6 @@ from classes import *
 import datetime
 import time
 import csv
-from datetime import date 
 
 pygame.init()
 pygame.mixer.init()
@@ -31,8 +30,12 @@ class Jeu:
         self.ecran_debut=True
         self.ecran_nom = False
         self.nomjoueur = 'None'
+        self.time = 0
     
     def quit_game(self,quit = True):
+
+        if self.time == 0:
+            self.time = time.time()-self.start
 
         if not quit: #On ajoute le meilleur score uniquement si la partie a été terminée
             fichier=open('Meilleur_score.txt','w')
@@ -41,7 +44,7 @@ class Jeu:
 
         #Update all_players
         csvfile =  open('all_players.csv', 'a', newline='')
-        fieldnames = ['name', 'score','day','time','quitted']
+        fieldnames = ['name', 'score','inGameTime','day','time','quitted']
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
 
         #Update nom des colonnes si le fichier est vide
@@ -53,7 +56,11 @@ class Jeu:
             writer.writeheader()
 
         #Ajout du joueur courrant
-        writer.writerow({'name': self.nomjoueur, 'score': self.score, 'day' : date.today(),'time':'time','quitted':quit})
+        timecode = datetime.datetime.now()
+        timecode = timecode.strftime('%d-%m-%Y %H:%M:%S')
+        mydate,mytime = timecode.split()
+        print(mytime[:7])
+        writer.writerow({'name': self.nomjoueur, 'score': self.score,'inGameTime':round(self.time,3), 'day' : mydate,'time':mytime,'quitted':quit})
         csvfile.close()
 
         #On quitte
@@ -127,11 +134,11 @@ class Jeu:
                 screen.blit(font2.render('Fin de partie !',True,NOIR),[XMAX//2-70,YMAX//3])
                 screen.blit(font.render('Votre score : '+str(self.score),True,NOIR),[XMAX//2-60,YMAX//2])
                 screen.blit(font.render('Rejouer ? o : oui, n : non',True,NOIR),[XMAX//2-100,YMAX//2+20])
-            timer=time.time()-self.start
-            if Meilleur_score['Score']<self.score or (Meilleur_score['Score']==self.score and Meilleur_score['Temps']>=timer) :
+            self.time=time.time()-self.start
+            if Meilleur_score['Score']<self.score or (Meilleur_score['Score']==self.score and Meilleur_score['Temps']>=self.time) :
                 Meilleur_score['Nom']=self.nomjoueur
                 Meilleur_score['Score']=self.score
-                Meilleur_score['Temps']=timer
+                Meilleur_score['Temps']=self.time
         elif self.fin_stage==True:
             self.stage_suivant()
         else:

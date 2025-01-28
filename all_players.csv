@@ -1,3 +1,5 @@
-name,score,day,time,quitted
-test1,100,2025-01-28,time,True
-test2,200,2025-01-28,time,True
+name,score,inGameTime,day,time,quitted
+testInGameTime,600,10.946584224700928,28-01-2025,22:52:59,True
+testShortenInGameTime,300,5.59174370765686,28-01-2025,22:54:1,True
+testInGameTime2,400,6.0696563720703125,28-01-2025,22:55:4,True
+testInGameTime3,400,7.537,28-01-2025,22:58:26,True
