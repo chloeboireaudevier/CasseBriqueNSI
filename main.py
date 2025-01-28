@@ -7,9 +7,14 @@ from constante import *
 from classes import *
 import datetime
 import time
+import csv
+from datetime import date 
 
 pygame.init()
 pygame.mixer.init()
+
+global Meilleur_score
+Meilleur_score = {}
 
 
 class Jeu:
@@ -25,6 +30,36 @@ class Jeu:
         self.partie=True
         self.ecran_debut=True
         self.ecran_nom = False
+        self.nomjoueur = 'None'
+    
+    def quit_game(self,quit = True):
+
+        if not quit: #On ajoute le meilleur score uniquement si la partie a été terminée
+            fichier=open('Meilleur_score.txt','w')
+            fichier.write(Meilleur_score['Nom']+'\n'+str(Meilleur_score['Score'])+'\n'+str(Meilleur_score['Temps']))
+            fichier.close()
+
+        #Update all_players
+        csvfile =  open('all_players.csv', 'a', newline='')
+        fieldnames = ['name', 'score','day','time','quitted']
+        writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+
+        #Update nom des colonnes si le fichier est vide
+        file = open('all_players.csv', 'r', encoding='utf-8')
+        empty = file.read()==''
+        file.close()
+
+        if empty:
+            writer.writeheader()
+
+        #Ajout du joueur courrant
+        writer.writerow({'name': self.nomjoueur, 'score': self.score, 'day' : date.today(),'time':'time','quitted':quit})
+        csvfile.close()
+
+        #On quitte
+        pygame.quit()
+        sys.exit()
+        exit()
 
     def stage_suivant(self):
         self.stage+=1
@@ -140,8 +175,7 @@ class Jeu:
             
                 # if user types QUIT then the screen will close 
                     if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE): 
-                        pygame.quit() 
-                        sys.exit() 
+                        self.quit_game()
             
                     if event.type == pygame.MOUSEBUTTONDOWN: 
                         if input_rect.collidepoint(event.pos): 
@@ -205,9 +239,7 @@ class Jeu:
         # Gestion des evenements
         for event in pygame.event.get():
             if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE): #pour quitter, refait car ça crashait à chaque fois
-                pygame.quit()
-                sys.exit()
-                exit()
+                self.quit_game()
             elif self.ecran_debut==True:
                 if event.type==pygame.KEYDOWN:
                     if event.key==pygame.K_SPACE:
@@ -225,9 +257,7 @@ class Jeu:
                     if event.key==pygame.K_o:
                         self.rejouer()
                     elif event.key==pygame.K_n:
-                        pygame.quit()
-                        sys.exit()
-                        exit()
+                        self.quit_game(quit=False)
 
 
     def recup_briques(self,fichier):
@@ -282,13 +312,12 @@ class Jeu:
                     else : x+=5
 
 
-
 fichier=open('Meilleur_score.txt','r')
 contenu=fichier.readlines()
 fichier.close()
 contenu[0]=contenu[0].replace('\n','')
 contenu[0]=contenu[0].strip("'")
-Meilleur_score={}
+
 Meilleur_score['Nom']=contenu[0]
 Meilleur_score['Score']=int(contenu[1])
 Meilleur_score['Temps']=float(contenu[2])
@@ -301,13 +330,11 @@ pygame.mixer.music.play(-1)
 pygame_icon = pygame.image.load('logo.png')
 pygame.display.set_icon(pygame_icon)
 while True:
+    clock.tick(60) # envoi de l'image ÃƒÆ’Ã‚Â  la carte graphique
+    pygame.display.flip() # on attend pour ne pas dÃƒÆ’Ã‚Â©passer 60 images/seconde
     jeu.gestion_evenements()
     jeu.mise_a_jour()
     jeu.affichage()
-    pygame.display.flip() # envoi de l'image ÃƒÆ’Ã‚Â  la carte graphique
-    clock.tick(60) # on attend pour ne pas dÃƒÆ’Ã‚Â©passer 60 images/seconde
-    fichier=open('Meilleur_score.txt','w')
-    fichier.write(Meilleur_score['Nom']+'\n'+str(Meilleur_score['Score'])+'\n'+str(Meilleur_score['Temps']))
-    fichier.close()
+
 
 
