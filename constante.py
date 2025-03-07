@@ -28,4 +28,5 @@ XMAX, YMAX = width, height
 
 
 font = pygame.font.SysFont(None,25)
-font2 = pygame.font.SysFont(None,35)
+font2 = pygame.font.SysFont(None,30)
+small_font = pygame.font.SysFont(None,23)

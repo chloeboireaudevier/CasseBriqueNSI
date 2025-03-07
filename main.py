@@ -118,9 +118,15 @@ class Jeu:
         screen.fill(FOND) # on efface l'écran
         if self.ecran_debut==True:
             screen.fill(DEBUT)
-            screen.blit(font2.render('LE MEILLEUR CASSE BRIQUES',True,NOIR),[XMAX//4+30,YMAX//2-60])
-            screen.blit(font.render('( Vous allez être époustoufflés )',True,NOIR),[XMAX//3+10,YMAX//2-30])
-            screen.blit(font.render('Pour commencer, appuyez sur espace',True,NOIR),[XMAX//3-10,YMAX//2])
+            texte = 'LE MEILLEUR CASSE BRIQUES'
+            texte = font2.render(texte,True,NOIR)
+            screen.blit(texte,[XMAX//2-texte.get_rect().width//2,YMAX//2-60])
+            texte = '( Vous allez être époustoufflés )'
+            texte = font.render(texte,True,NOIR)
+            screen.blit(texte,[XMAX//2-texte.get_rect().width//2,YMAX//2-30])
+            texte = 'Pour commencer, appuyez sur espace'
+            texte = font.render(texte,True,NOIR)
+            screen.blit(texte,[XMAX//2-texte.get_rect().width//2,YMAX//2])
             screen.blit(font.render('Meilleur score détenu par ' +Meilleur_score['Nom']+' avec '+str(Meilleur_score['Score'])+' points en '+str(round(Meilleur_score['Temps'],3))+' secondes',True,BLANC),[XMIN+10,YMIN+10])
 
         elif self.partie==False:
@@ -155,15 +161,13 @@ class Jeu:
 
 
     def afficher_page_nom(self):
-            screen.fill(DEBUT)
-            screen.blit(font2.render('NOM',True,NOIR),[XMAX//4+30,YMAX//2-60])
             
             # basic font for user typed 
             base_font = pygame.font.Font(None, 32) 
             user_text = '' 
             
             # create rectangle 
-            input_rect = pygame.Rect(200, 200, 140, 32) 
+            input_rect = pygame.Rect(XMAX//4, YMAX//2, XMAX//2, 32) 
             
             # color_active stores color(lightskyblue3) which 
             # gets active when input box is clicked by user 
@@ -176,6 +180,15 @@ class Jeu:
             
             active = False
 
+            name_text = "Entrez votre nom, joueur !"
+            name_text = font2.render(name_text,True,NOIR)
+            name_text_position = [(XMAX//2)-(name_text.get_rect().width//2),YMAX//3]
+
+            validation_text = "-- appuyez sur entrée pour valider --"
+            validation_text = small_font.render(validation_text,True,NOIR)
+            validation_text_position = [(XMAX//2)-(validation_text.get_rect().width//2),2*YMAX//3]
+
+            has_max_char = False
             
             while True: 
                 for event in pygame.event.get(): 
@@ -190,7 +203,7 @@ class Jeu:
                         else: 
                             active = False
             
-                    if event.type == pygame.KEYDOWN: 
+                    if event.type == pygame.KEYDOWN: #traiter le cas ou on reste appuyé sur la touche
 
                         if event.key == pygame.K_RETURN:
                             return user_text
@@ -199,16 +212,21 @@ class Jeu:
                         if event.key == pygame.K_BACKSPACE: 
             
                             # get text input from 0 to -1 i.e. end. 
-                            user_text = user_text[:-1] 
+                            user_text = user_text[:-1]
+                            if has_max_char:
+                                has_max_char = False
             
                         # Unicode standard is used for string 
                         # formation 
                         else: 
-                            user_text += event.unicode
+                            if not has_max_char:
+                                user_text += event.unicode
 
                 
                 # it will set background color of screen 
-                screen.fill((255, 255, 255)) 
+                screen.fill(DEBUT)
+                screen.blit(name_text,name_text_position)
+                screen.blit(validation_text,validation_text_position)
             
                 if active: 
                     color = color_active 
@@ -223,10 +241,13 @@ class Jeu:
                 
                 # render at position stated in arguments 
                 screen.blit(text_surface, (input_rect.x+5, input_rect.y+5)) 
-                
+             
                 # set width of textfield so that text cannot get 
                 # outside of user's text input 
-                input_rect.w = max(100, text_surface.get_width()+10) 
+                # Pour ne pas dépasser la taille de la box
+                if text_surface.get_width()+20 >= XMAX//2: 
+                    has_max_char = True
+                #input_rect.w = XMAX//2
                 
                 # display.flip() will update only a portion of the 
                 # screen to updated, not full area 
