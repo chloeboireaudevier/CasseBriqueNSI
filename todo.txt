@@ -3,3 +3,9 @@
 - affichage du texte sur les écrans autres que de début et de sélection du nom
 - enlever les copier-coller et les variables "magiques" ou répétées
 - compteur de points qui recalcule à chaque itération ?
+
+- clean code
+- change icon
+- fix bugs bottom of the screen
+- multiballs
+- forcer souris sur raquette
