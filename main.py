@@ -34,34 +34,36 @@ class Jeu:
     
     def quit_game(self,quit = True):
 
-        if self.time == 0:
-            self.time = time.time()-self.start
+        if self.start != None:
 
-        if not quit: #On ajoute le meilleur score uniquement si la partie a été terminée
-            fichier=open('Meilleur_score.txt','w')
-            fichier.write(Meilleur_score['Nom']+'\n'+str(Meilleur_score['Score'])+'\n'+str(Meilleur_score['Temps']))
-            fichier.close()
+            if self.time == 0:
+                self.time = time.time()-self.start
 
-        #Update all_players
-        csvfile =  open('all_players.csv', 'a', newline='')
-        fieldnames = ['name', 'score','inGameTime','day','time','quitted']
-        writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+            if not quit: #On ajoute le meilleur score uniquement si la partie a été terminée
+                fichier=open('Meilleur_score.txt','w')
+                fichier.write(Meilleur_score['Nom']+'\n'+str(Meilleur_score['Score'])+'\n'+str(Meilleur_score['Temps']))
+                fichier.close()
 
-        #Update nom des colonnes si le fichier est vide
-        file = open('all_players.csv', 'r', encoding='utf-8')
-        empty = file.read()==''
-        file.close()
+            #Update all_players
+            csvfile =  open('all_players.csv', 'a', newline='')
+            fieldnames = ['name', 'score','inGameTime','day','time','quitted']
+            writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
 
-        if empty:
-            writer.writeheader()
+            #Update nom des colonnes si le fichier est vide
+            file = open('all_players.csv', 'r', encoding='utf-8')
+            empty = file.read()==''
+            file.close()
 
-        #Ajout du joueur courrant
-        timecode = datetime.datetime.now()
-        timecode = timecode.strftime('%d-%m-%Y %H:%M:%S')
-        mydate,mytime = timecode.split()
-        print(mytime[:7])
-        writer.writerow({'name': self.nomjoueur, 'score': self.score,'inGameTime':round(self.time,3), 'day' : mydate,'time':mytime,'quitted':quit})
-        csvfile.close()
+            if empty:
+                writer.writeheader()
+
+            #Ajout du joueur courrant
+            timecode = datetime.datetime.now()
+            timecode = timecode.strftime('%d-%m-%Y %H:%M:%S')
+            mydate,mytime = timecode.split()
+            print(mytime[:7])
+            writer.writerow({'name': self.nomjoueur, 'score': self.score,'inGameTime':round(self.time,3), 'day' : mydate,'time':mytime,'quitted':quit})
+            csvfile.close()
 
         #On quitte
         pygame.quit()
@@ -116,7 +118,7 @@ class Jeu:
 
     def affichage(self):
         screen.fill(FOND) # on efface l'écran
-        
+
         if self.ecran_debut==True:
             self.afficher_ecran_debut()
 
