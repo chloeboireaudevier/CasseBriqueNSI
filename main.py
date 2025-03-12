@@ -95,6 +95,7 @@ class Jeu:
         self.score=0
         self.fin_stage=False
         self.partie=True
+        self.start = None
         jeu.recup_briques('briques.txt')
 
     def mise_a_jour(self):
@@ -123,10 +124,7 @@ class Jeu:
             self.afficher_ecran_debut()
 
         elif self.partie==False:
-            if self.vies==0:
-                self.afficher_ecran_defaite()
-            else:
-                self.afficher_ecran_victoire()
+            self.afficher_ecran_fin()
 
             self.time=time.time()-self.start
             if Meilleur_score['Score']<self.score or (Meilleur_score['Score']==self.score and Meilleur_score['Temps']>=self.time) :
@@ -146,7 +144,9 @@ class Jeu:
             screen.blit(font.render('Vies : '+str(self.vies),True,BLANC),[XMAX-80,YMAX-20])
             screen.blit(font.render('Score : '+str(self.score),True,BLANC),[XMIN+10,YMAX-20])
             screen.blit(font.render(str(tps),True,BLANC),[XMAX//2-50,YMAX-20])
-            screen.blit(font.render('Stage '+str(self.stage),True,STAGE),[XMAX//2-20,YMIN+2])
+            texte = 'Stage '+str(self.stage)
+            texte = font.render(texte,True,STAGE)
+            screen.blit(texte,[XMAX//2-texte.get_rect().width//2,YMIN+2])
 
     def afficher_ecran_debut(self):
         screen.fill(DEBUT)
@@ -163,17 +163,26 @@ class Jeu:
                                 ' avec '+str(Meilleur_score['Score'])+' points en '+
                                 str(round(Meilleur_score['Temps'],3))+' secondes',True,BLANC),[XMIN+10,YMIN+10])
 
-    def afficher_ecran_defaite(self):
-        screen.fill(DEFAITE)
-        screen.blit(font2.render('Game over :(',True,NOIR),[XMAX//2-70,YMAX//3])
-        screen.blit(font.render('Votre score : '+str(self.score),True,NOIR),[XMAX//2-60,YMAX//2])
-        screen.blit(font.render('Rejouer ? o : oui, n : non',True,NOIR),[XMAX//2-100,YMAX//2+20])
+    def afficher_ecran_fin(self):
+        if self.vies == 0:
+            screen.fill(DEFAITE)
+            texte = 'Game over :('
+            texte = font2.render(texte,True,NOIR)
+            screen.blit(texte,[XMAX//2-texte.get_rect().width//2,YMAX//3])
+        else:
+            screen.fill(VICTOIRE)
+            texte = 'Fin de partie !'
+            texte = font2.render(texte,True,NOIR)
+            screen.blit(texte,[XMAX//2-texte.get_rect().width//2,YMAX//3])
 
-    def afficher_ecran_victoire(self):
-        screen.fill(VICTOIRE)
-        screen.blit(font2.render('Fin de partie !',True,NOIR),[XMAX//2-70,YMAX//3])
-        screen.blit(font.render('Votre score : '+str(self.score),True,NOIR),[XMAX//2-60,YMAX//2])
-        screen.blit(font.render('Rejouer ? o : oui, n : non',True,NOIR),[XMAX//2-100,YMAX//2+20])
+        texte = 'Votre score : '+str(self.score)
+        texte = font.render(texte,True,NOIR)
+        screen.blit(texte,[XMAX//2-texte.get_rect().width//2,YMAX//2])
+        
+        texte = 'Rejouer ? o : oui, n : non'
+        texte = font.render(texte,True,NOIR)
+        screen.blit(texte,[XMAX//2-texte.get_rect().width//2,YMAX//2+20])
+           
 
     def afficher_page_nom(self):
             

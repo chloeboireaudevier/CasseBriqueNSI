@@ -10,3 +10,6 @@ testQuitFinJeu,200,9.843,07-03-2025,22:03:37,True
 testQuitEchap,0,0.965,07-03-2025,22:04:30,True
 test,9300,227.864,12-03-2025,20:01:53,False
 testquit,0,0.637,12-03-2025,20:04:29,True
+testEcranDefaite,100,26.633,12-03-2025,20:10:18,False
+testEcranFin,200,10.866,12-03-2025,20:14:12,False
+testNomStage,0,10.534,12-03-2025,20:16:20,True
