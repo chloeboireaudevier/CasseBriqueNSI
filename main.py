@@ -116,35 +116,22 @@ class Jeu:
 
     def affichage(self):
         screen.fill(FOND) # on efface l'écran
+        
         if self.ecran_debut==True:
-            screen.fill(DEBUT)
-            texte = 'LE MEILLEUR CASSE BRIQUES'
-            texte = font2.render(texte,True,NOIR)
-            screen.blit(texte,[XMAX//2-texte.get_rect().width//2,YMAX//2-60])
-            texte = '( Vous allez être époustoufflés )'
-            texte = font.render(texte,True,NOIR)
-            screen.blit(texte,[XMAX//2-texte.get_rect().width//2,YMAX//2-30])
-            texte = 'Pour commencer, appuyez sur espace'
-            texte = font.render(texte,True,NOIR)
-            screen.blit(texte,[XMAX//2-texte.get_rect().width//2,YMAX//2])
-            screen.blit(font.render('Meilleur score détenu par ' +Meilleur_score['Nom']+' avec '+str(Meilleur_score['Score'])+' points en '+str(round(Meilleur_score['Temps'],3))+' secondes',True,BLANC),[XMIN+10,YMIN+10])
+            self.afficher_ecran_debut()
 
         elif self.partie==False:
             if self.vies==0:
-                screen.fill(DEFAITE) #écran de défaite
-                screen.blit(font2.render('Game over :(',True,NOIR),[XMAX//2-70,YMAX//3])
-                screen.blit(font.render('Votre score : '+str(self.score),True,NOIR),[XMAX//2-60,YMAX//2])
-                screen.blit(font.render('Rejouer ? o : oui, n : non',True,NOIR),[XMAX//2-100,YMAX//2+20])
+                self.afficher_ecran_defaite()
             else:
-                screen.fill(VICTOIRE)
-                screen.blit(font2.render('Fin de partie !',True,NOIR),[XMAX//2-70,YMAX//3])
-                screen.blit(font.render('Votre score : '+str(self.score),True,NOIR),[XMAX//2-60,YMAX//2])
-                screen.blit(font.render('Rejouer ? o : oui, n : non',True,NOIR),[XMAX//2-100,YMAX//2+20])
+                self.afficher_ecran_victoire()
+
             self.time=time.time()-self.start
             if Meilleur_score['Score']<self.score or (Meilleur_score['Score']==self.score and Meilleur_score['Temps']>=self.time) :
                 Meilleur_score['Nom']=self.nomjoueur
                 Meilleur_score['Score']=self.score
                 Meilleur_score['Temps']=self.time
+
         elif self.fin_stage==True:
             self.stage_suivant()
         else:
@@ -159,6 +146,32 @@ class Jeu:
             screen.blit(font.render(str(tps),True,BLANC),[XMAX//2-50,YMAX-20])
             screen.blit(font.render('Stage '+str(self.stage),True,STAGE),[XMAX//2-20,YMIN+2])
 
+    def afficher_ecran_debut(self):
+        screen.fill(DEBUT)
+        texte = 'LE MEILLEUR CASSE BRIQUES'
+        texte = font2.render(texte,True,NOIR)
+        screen.blit(texte,[XMAX//2-texte.get_rect().width//2,YMAX//2-60])
+        texte = '( Vous allez être époustoufflés )'
+        texte = font.render(texte,True,NOIR)
+        screen.blit(texte,[XMAX//2-texte.get_rect().width//2,YMAX//2-30])
+        texte = 'Pour commencer, appuyez sur espace'
+        texte = font.render(texte,True,NOIR)
+        screen.blit(texte,[XMAX//2-texte.get_rect().width//2,YMAX//2])
+        screen.blit(font.render('Meilleur score détenu par ' +Meilleur_score['Nom']+
+                                ' avec '+str(Meilleur_score['Score'])+' points en '+
+                                str(round(Meilleur_score['Temps'],3))+' secondes',True,BLANC),[XMIN+10,YMIN+10])
+
+    def afficher_ecran_defaite(self):
+        screen.fill(DEFAITE)
+        screen.blit(font2.render('Game over :(',True,NOIR),[XMAX//2-70,YMAX//3])
+        screen.blit(font.render('Votre score : '+str(self.score),True,NOIR),[XMAX//2-60,YMAX//2])
+        screen.blit(font.render('Rejouer ? o : oui, n : non',True,NOIR),[XMAX//2-100,YMAX//2+20])
+
+    def afficher_ecran_victoire(self):
+        screen.fill(VICTOIRE)
+        screen.blit(font2.render('Fin de partie !',True,NOIR),[XMAX//2-70,YMAX//3])
+        screen.blit(font.render('Votre score : '+str(self.score),True,NOIR),[XMAX//2-60,YMAX//2])
+        screen.blit(font.render('Rejouer ? o : oui, n : non',True,NOIR),[XMAX//2-100,YMAX//2+20])
 
     def afficher_page_nom(self):
             
@@ -256,9 +269,6 @@ class Jeu:
                 # clock.tick(60) means that for every second at most 
                 # 60 frames should be passed. 
                 clock.tick(60) 
-
-
-
 
     def get_nom(self):
         self.nomjoueur = self.afficher_page_nom()

@@ -1,5 +1,4 @@
 - long press sur l'input du nom
-- fonction affichage interne à la fonction affichage du main pour éviter les répétitions de la variable texte
 - affichage du texte sur les écrans autres que de début et de sélection du nom
 - enlever les copier-coller et les variables "magiques" ou répétées
 - compteur de points qui recalcule à chaque itération ?
