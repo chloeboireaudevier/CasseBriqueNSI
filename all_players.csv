@@ -13,3 +13,7 @@ testquit,0,0.637,12-03-2025,20:04:29,True
 testEcranDefaite,100,26.633,12-03-2025,20:10:18,False
 testEcranFin,200,10.866,12-03-2025,20:14:12,False
 testNomStage,0,10.534,12-03-2025,20:16:20,True
+math,9200,270.177,24-03-2025,16:36:44,False
+testRejouerPartie ,200,11.291,24-03-2025,16:41:06,Use quit() or Ctrl-Z plus Return to exit
+testRejouerPartie2,0,9.396,24-03-2025,16:41:22,Use quit() or Ctrl-Z plus Return to exit
+testRejouerPartie3,200,7.209,24-03-2025,16:43:26,True

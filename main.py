@@ -31,9 +31,8 @@ class Jeu:
         self.ecran_nom = False
         self.nomjoueur = 'None'
         self.time = 0
-    
-    def quit_game(self,quit = True):
 
+    def enregistrer_partie(self,quit=True):
         if self.start != None:
 
             if self.time == 0:
@@ -64,6 +63,9 @@ class Jeu:
             print(mytime[:7])
             writer.writerow({'name': self.nomjoueur, 'score': self.score,'inGameTime':round(self.time,3), 'day' : mydate,'time':mytime,'quitted':quit})
             csvfile.close()
+    
+    def quit_game(self,quit = True):
+        self.enregistrer_partie(quit)       
 
         #On quitte
         pygame.quit()
@@ -86,6 +88,7 @@ class Jeu:
 
 
     def rejouer(self):
+        self.enregistrer_partie(False)
         self.ecran_debut=True
         self.balle=Balle()
         self.raquette = Raquette()
